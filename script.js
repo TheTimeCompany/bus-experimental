@@ -11,7 +11,6 @@ const busMarkers = {};
 const busNumbers = {};
 const busNumbersSet = new Set();
 const highlightedMarker = new Set();
-
 let currentBusIndex = {};
 
 async function getBusData() {
@@ -69,7 +68,6 @@ function highlightMarker(marker) {
 
     marker.setIcon(highlightedIcon);
 
-    // Revert marker style after animation (2 seconds)
     setTimeout(() => resetMarkerStyle(marker, marker.originalIcon), 2000);
 }
 
@@ -121,6 +119,19 @@ async function updateMap() {
             currentBusIndex[routeNumber] = 0;
         }
 
+        // Add bus data to raw data panel
+        const rawDataItem = document.createElement('div');
+        rawDataItem.className = 'raw-data-item';
+        rawDataItem.innerHTML = `
+            <strong>Bus ${routeNumber}</strong><br>
+            Route: ${route}<br>
+            Location: ${currentLocation}<br>
+            Last Updated: ${positionTime}<br>
+            Status: ${deviation}<br>
+            <hr>
+        `;
+        rawDataContainer.appendChild(rawDataItem);
+
         // Add bus number button if it doesn't exist
         if (!busNumbersSet.has(routeNumber)) {
             busNumbersSet.add(routeNumber);
@@ -148,9 +159,6 @@ async function updateMap() {
     resetTimer();
 }
 
-setInterval(updateMap, 300000);
-updateMap();
-
 document.querySelector('.accordion').addEventListener('click', function() {
     this.classList.toggle('active');
     const panel = document.getElementById('rawData');
@@ -166,3 +174,6 @@ function handleRefresh() {
     updateMap();
     resetTimer();
 }
+
+setInterval(updateMap, 300000);
+updateMap();
