@@ -82,12 +82,12 @@ async function updateMap() {
 
         const icon = L.divIcon({
             className: 'leaflet-div-icon',
-            html: `<div style="position: relative;">
-                    <i class="fa-solid fa-location-pin" style="font-size: 24px; color: blue;"></i>
-                    <div class="bus-route" style="position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); color: white; background-color: rgba(0, 0, 0, 0.5); padding: 3px 6px; border-radius: 5px;">
-                        ${routeNumber}
-                    </div>
-                  </div>`
+            html: `<div style="position: relative; display: flex; justify-content: center; align-items: center;">
+            <i class="fa-solid fa-location-pin" style="font-size: 40px; color: #007900; position: absolute; bottom: 0px;"></i>
+            <div class="bus-route" style="position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); color: white; background-color: rgba(0, 0, 0, 0.07); padding: 3px 6px; border-radius: 5px; font-size: 12px; font-weight: bold;">
+                ${routeNumber}
+            </div>
+        </div>`
         });
 
         const marker = L.marker([lat, lon], { icon }).addTo(map)
