@@ -1,5 +1,7 @@
 const mapCenter = [47.5615, -52.7126];
 const map = L.map('map').setView(mapCenter, 13);
+let countdownTimer;
+let timeRemaining = 300;
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -24,6 +26,28 @@ async function getBusData() {
         return [];
     }
 }
+
+function updateTimer() {
+    const timerElement = document.getElementById('timerOverlay');
+    const minutes = Math.floor(timeRemaining / 60);
+    const seconds = timeRemaining % 60;
+    timerElement.textContent = `Updating in ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+}
+
+function resetTimer() {
+    clearInterval(countdownTimer);
+    timeRemaining = 300;
+    updateTimer();
+    countdownTimer = setInterval(() => {
+        if (timeRemaining > 0) {
+            timeRemaining--;
+            updateTimer();
+        } else {
+            clearInterval(countdownTimer);
+        }
+    }, 1000);
+}
+
 async function updateMap() {
     const buses = await getBusData();
     const rawDataContainer = document.getElementById('rawData');
@@ -54,18 +78,16 @@ async function updateMap() {
         `;
         rawDataContainer.innerHTML += busDataText;
 
-        // Create the route number (remove part after '-')
         const routeNumber = route.split('-')[0];
 
-        // Create custom marker for the bus route
         const icon = L.divIcon({
             className: 'leaflet-div-icon',
-            html: `<div style="position: relative; display: flex; justify-content: center; align-items: center;">
-            <i class="fa-solid fa-location-pin" style="font-size: 40px; color: #007900; position: absolute; bottom: 0px;"></i>
-            <div class="bus-route" style="position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); color: white; background-color: rgba(0, 0, 0, 0.07); padding: 3px 6px; border-radius: 5px; font-size: 12px; font-weight: bold;">
-                ${routeNumber}
-            </div>
-        </div>`
+            html: `<div style="position: relative;">
+                    <i class="fa-solid fa-location-pin" style="font-size: 24px; color: blue;"></i>
+                    <div class="bus-route" style="position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); color: white; background-color: rgba(0, 0, 0, 0.5); padding: 3px 6px; border-radius: 5px;">
+                        ${routeNumber}
+                    </div>
+                  </div>`
         });
 
         const marker = L.marker([lat, lon], { icon }).addTo(map)
@@ -76,11 +98,11 @@ async function updateMap() {
                 Status: ${deviation}
             `);
 
-        busMarkers.push(marker); // Store the marker in the busMarkers array for later reference
+        busMarkers.push(marker);
 
         // Check if the bus number is already in the set
         if (!busNumbersSet.has(routeNumber)) {
-            busNumbersSet.add(routeNumber); // Add it to the set
+            busNumbersSet.add(routeNumber);
 
             // Create bus number button for the floating panel
             const busNumberButton = document.createElement('div');
@@ -93,9 +115,11 @@ async function updateMap() {
             busNumbersContainer.appendChild(busNumberButton);
         }
     });
+
+    resetTimer();
 }
 
-setInterval(updateMap, 1800); // Refresh the bus data
+setInterval(updateMap, 300000); // Refresh the bus data
 updateMap();
 
 const accordion = document.querySelector('.accordion');
