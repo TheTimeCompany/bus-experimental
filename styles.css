@@ -60,16 +60,10 @@ h1 {
     50% { transform: scale(1.5); }
 }
 
-.overlay-container {
+.refresh-overlay {
     position: absolute;
     top: 10px;
-    right: 10px;
-    display: flex;
-    gap: 10px;
-    align-items: center;
-}
-
-.refresh-overlay, .timer-overlay {
+    right: 180px; /* Position to the left of the timer overlay */
     padding: 8px 15px;
     background-color: rgba(0, 0, 0, 0.7);
     color: white;
@@ -77,17 +71,27 @@ h1 {
     font-weight: bold;
     border-radius: 5px;
     z-index: 1000;
-    text-align: center;
-}
-
-.refresh-overlay {
     cursor: pointer;
+    text-align: center;
     transition: background-color 0.3s ease;
 }
 
 .refresh-overlay:hover {
     background-color: rgba(255, 255, 255, 0.8);
     color: black;
+}
+
+.timer-overlay {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 8px 15px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 5px;
+    z-index: 1000;
 }
 
 .local-time-overlay {
