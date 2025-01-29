@@ -31,9 +31,21 @@ async function getBusData() {
 
 function updateTimer() {
     const timerElement = document.getElementById('timerOverlay');
-    const minutes = Math.floor(timeRemaining / 60);
-    const seconds = timeRemaining % 60;
-    timerElement.textContent = `Updating in ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    fetch("https://worldtimeapi.org/api/timezone/America/St_Johns")
+        .then(response => response.json())
+        .then(data => {
+            const dateTime = new Date(data.datetime);
+            const hours = dateTime.getHours();
+
+            if (hours >= 0 && hours < 6) {
+                timerElement.textContent = "⚠️ no Metrobus service";
+            } else {
+                const minutes = Math.floor(timeRemaining / 60);
+                const seconds = timeRemaining % 60;
+                timerElement.textContent = `Updating in ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            }
+        })
+        .catch(error => console.error("Error fetching local time:", error));
 }
 
 function resetTimer() {
@@ -157,6 +169,7 @@ async function updateMap() {
     });
 
     resetTimer();
+    updateLocalTime();
 }
 
 document.querySelector('.accordion').addEventListener('click', function() {
@@ -177,3 +190,29 @@ function handleRefresh() {
 
 setInterval(updateMap, 300000);
 updateMap();
+
+updateLocalTime();
+setInterval(updateLocalTime, 60000);
+
+async function updateLocalTime() {
+    try {
+        const response = await fetch("https://www.timeapi.io/api/Time/current/zone?timeZone=America/St_Johns");
+        const data = await response.json();
+        const { hour, minute } = data;
+        let ampm = hour >= 12 ? "PM" : "AM";
+        let hours = hour % 12 || 12;
+        let minutes = minute < 10 ? "0" + minute : minute;
+
+        const formattedTime = `${hours}:${minutes} ${ampm}`;
+        document.getElementById("localTimeOverlay").textContent = formattedTime;
+
+        if (hour >= 0 && hour < 6) {
+            document.getElementById("timerOverlay").textContent = "⚠️ no Metrobus service";
+        } else {
+            updateTimer();
+        }
+    } catch (error) {
+        console.error("Error fetching local time:", error);
+    }
+}
+
