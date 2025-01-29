@@ -35,8 +35,11 @@
     <h1 id="animatedHeading">Jackbus™ Metrobus Tracker</h1>
     <div class="container">
         <div id="map"></div>
+        <div id="localTimeOverlay" class="local-time-overlay">Loading time...</div>
+      <div class="overlay-container">
         <div id="refreshOverlay" class="refresh-overlay" onclick="handleRefresh()">Refresh</div>
         <div id="timerOverlay" class="timer-overlay">Updating in ...</div>
+      </div>
         <button class="accordion">Click here for raw data</button>
         
         <div class="panel" id="rawData">
