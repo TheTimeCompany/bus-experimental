@@ -60,11 +60,20 @@ h1 {
     50% { transform: scale(1.5); }
 }
 
+.overlay-container {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
 .refresh-overlay, .timer-overlay {
     padding: 8px 15px;
     background-color: rgba(0, 0, 0, 0.7);
     color: white;
-    font-size: 16px;
+    font-size: 0.9rem;
     font-weight: bold;
     border-radius: 5px;
     z-index: 1000;
@@ -81,19 +90,6 @@ h1 {
     color: black;
 }
 
-.timer-overlay {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    padding: 8px 15px;
-    background-color: rgba(0, 0, 0, 0.7);
-    color: white;
-    font-size: 16px;
-    font-weight: bold;
-    border-radius: 5px;
-    z-index: 1000;
-}
-
 .local-time-overlay {
     position: absolute;
     top: 10px;
@@ -101,7 +97,7 @@ h1 {
     padding: 8px 15px;
     background-color: rgba(255, 255, 255, 0.7);
     color: black;
-    font-size: 16px;
+    font-size: 0.9rem;
     font-weight: bold;
     border-radius: 5px;
     z-index: 1000;
